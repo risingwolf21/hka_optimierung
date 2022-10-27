@@ -42,10 +42,10 @@ public:
 //  minimum_t contains the parametic value s for the current nearest triangle (not used in this unoptimized version)
   bool intersects(Vector<T,3> origin, Vector<T,3> direction,
                    FLOAT &t, FLOAT &u, FLOAT &v, FLOAT minimum_t = INFINITY) {
-    Vector<T, 3> normal =  cross_product(p2 - p1, p3  - p1);
+    Vector<T, 3> normal =  cross_product(p2 - p1, p3  - p1); // eventuell zwischenspeichern für optimierung (nicht notwendig gut wenn zeit)
     
     T normalRayProduct = normal.scalar_product( direction );
-    T area = normal.length(); // used for u-v-parameter calculation
+    T area = normal.length(); // used for u-v-parameter calculation // nach hinten schieben
 
     if ( fabs(normalRayProduct) < EPSILON ) {
       return false;
@@ -54,7 +54,7 @@ public:
     T d = normal.scalar_product( p1 );
     t = (d - normal.scalar_product( origin ) ) / normalRayProduct;
 
-    if ( t < 0.0 ) {
+    if ( t < 0.0 ) { // t > minimum_t
       return false;
     }
    
@@ -86,11 +86,49 @@ public:
 #else
 
 // optimized version
+
+// NUR CODESCHNIPSEL ZEIGEN IM BERICHT KEIN ASSEMBLER CODE!
 bool intersects(Vector<T,3> origin, Vector<T,3> direction,
                    FLOAT &t, FLOAT &u, FLOAT &v, FLOAT minimum_t) {
-    // from here
-    // TODO: your code
-    // to here
+    Vector<T, 3> normal =  cross_product(p2 - p1, p3  - p1);
+    
+    T normalRayProduct = normal.scalar_product( direction );
+
+    if ( fabs(normalRayProduct) < EPSILON ) {
+      return false;
+    }
+
+    T d = normal.scalar_product( p1 );
+    t = (d - normal.scalar_product( origin ) ) / normalRayProduct;
+
+    if ( t < 0.0 || t > minimum_t ) {
+      return false;
+    }
+   
+    Vector<T, 3> intersection = origin + t * direction;
+   
+    Vector<T, 3> vector = cross_product(p2 - p1,  intersection - p1 );
+    if ( normal.scalar_product(vector) < 0.0 ) { 
+      return false;
+    }
+
+    
+    vector = cross_product(p3 - p2,  intersection - p2 );
+    if ( normal.scalar_product(vector) < 0.0 ) { 
+      return false;
+    }
+
+    FLOAT area_u_sqaure  = vector.square_of_length();
+
+    vector = cross_product(p1 - p3, intersection - p3 );
+    if (normal.scalar_product(vector) < 0.0 ) {
+      return false;
+    }
+
+    FLOAT area_square = normal.square_of_length();
+    v = area_u_sqaure / area_square;
+    u = area_u_sqaure / area_square;
+
     return true;
   }
 #endif

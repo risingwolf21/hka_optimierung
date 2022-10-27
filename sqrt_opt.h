@@ -5,6 +5,11 @@ typedef float v4sf __attribute__ ((vector_size (16)));
 typedef int v4si __attribute__ ((vector_size (16)));
 
 
+// vaddps im assembler muss vorkommen
+// vdivps 
+// vmultps
+
+// ss statt ps (vaddss statt vaddps) ist nicht richtig vektorisiert dann stimmt etwas nicht
 template <size_t LOOPS = 2>
 float sqrt1(float * a) {
   float root;

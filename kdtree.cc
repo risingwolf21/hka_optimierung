@@ -9,6 +9,7 @@ void BoundingBox::split(BoundingBox & left, BoundingBox & right) {
   // from here
   // TODO: your code
   // to here
+  // pushback to add triangles to boundingbox
 }
 
 bool BoundingBox::contains(Vector<FLOAT, 3> v) {
@@ -68,5 +69,6 @@ bool KDTree::hasNearestTriangle(Vector<FLOAT,3> eye, Vector<FLOAT,3> direction, 
   // from here
   // TODO: your code
   // to here
+  // wenn nearest triangle !=  nullptr dann wurde was gefunden sonst nocht
   return nearest_triangle != nullptr;
 }
