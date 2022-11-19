@@ -1,0 +1,170 @@
+\documentclass[
+	fontsize=12pt,           % Leitlinien sprechen von Schriftgröße 12.
+	paper=A4,
+	twoside=false,
+	listof=totoc,            % Tabellen- und Abbildungsverzeichnis ins Inhaltsverzeichnis
+	bibliography=totoc,
+	headsepline]{scrreprt}
+\usepackage[onehalfspacing]{setspace}
+\usepackage[utf8]{inputenc}
+\usepackage[printonlyused]{acronym}
+\usepackage[german]{babel}
+\usepackage[T1]{fontenc}
+\usepackage{url}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb} 
+\usepackage{listings}
+\usepackage{graphicx}
+\usepackage{wrapfig, framed}
+\usepackage{float}
+\usepackage{multicol}
+\usepackage{hyperref}
+\usepackage[a4paper,left=3cm, right=3cm, top=4cm, bottom=4cm]{geometry}
+\usepackage[dvipsnames, svgnames]{xcolor}
+\usepackage{scrhack}
+\usepackage{prettyref}
+\usepackage{mathrsfs,amssymb}
+\usepackage{todonotes}
+\usepackage{forest}
+\usepackage[xindy,toc,automake]{glossaries}
+\usepackage{xr}
+\usepackage[
+	backend = biber,                % Verweis auf biber
+	language = auto,
+	style = numeric,                % Nummerierung der Quellen mit Zahlen
+	sorting = none,                 % none = Sortierung nach der Erscheinung im Dokument
+	sortcites = true,               % Sortiert die Quellen innerhalb eines cite-Befehls
+	block = space,                  % Extra Leerzeichen zwischen Blocks
+	hyperref = true,                % Links sind klickbar auch in der Quelle
+	%backref = true,                % Referenz, auf den Text an die zitierte Stelle
+	bibencoding = auto,
+	giveninits = true,              % Vornamen werden abgekürzt
+	doi=false,                      % DOI nicht anzeigen
+	isbn=false,                     % ISBN nicht anzeigen
+    alldates=short                  % Datum immer als DD.MM.YYYY anzeigen
+]{biblatex}
+\DeclareNameAlias{default}{last-first}  % Nachname vor dem Vornamen
+\AtBeginBibliography{\renewcommand{\multinamedelim}{\addslash\space
+}\renewcommand{\finalnamedelim}{\multinamedelim}}  % Schrägstrich zwischen den Autorennamen
+\DefineBibliographyStrings{german}{
+  urlseen = {Einsichtnahme:},                      % Ändern des Titels von "besucht am"
+}
+\usepackage[autostyle=true,german=quotes]{csquotes}
+\addbibresource{literatur.bib}
+
+%Paragraph abstand 
+\setlength{\parindent}{0em}
+\setlength{\parskip}{1em}
+
+% ---- Abstand verkleinern von der Überschrift 
+\renewcommand*{\chapterheadstartvskip}{\vspace*{.4\baselineskip}}
+
+%Commands für das Deckblatt
+\newcommand{\Autor}{Karl Wolf}
+\newcommand{\MatrikelNummer}{8}
+\newcommand{\Was}{Projektbericht}
+\newcommand{\Titel}{Optimierung von Programmen}
+\newcommand{\AbgabeDatum}{11 Januar 2021}
+\newcommand{\Dauer}{Dauer}
+\newcommand{\Abschluss}{Master of Science}
+\newcommand{\Studiengang}{Informatik}
+
+%Commands für Codebeispiele
+\newcommand{\code}[1]{\texttt{#1}}
+\newcommand{\ccode}[2]{\textcolor{#1}{#2}}
+\newcommand{\mquote}[1]{\grqq {#1}\grqq}
+
+\lstset{
+    tabsize=2, % tab space width
+    columns=fullflexible,
+    xleftmargin=2em,
+    showstringspaces=false, % don't mark spaces in strings
+    numbers=left, % display line numbers on the left
+    commentstyle=\color{green}, % comment color
+    keywordstyle=\color{blue}, % keyword color
+    stringstyle=\color{red}, % string color
+    basicstyle=\rmfamily\small,
+    captionpos=b, 
+    escapeinside={<@}{@>},
+    numberstyle=\tiny,
+}
+
+\renewcommand{\lstlistingname}{Codebeispiel}
+\let\origthelstnumber\thelstnumber
+\newcommand*\Suppressnumber{%
+  \lst@AddToHook{OnNewLine}{%
+    \let\thelstnumber\relax%
+     \advance\c@lstnumber-\@ne\relax%
+    }%
+}
+
+\newcommand*\Reactivatenumber[1]{%
+  \setcounter{lstnumber}{\numexpr#1-1\relax}
+  \lst@AddToHook{OnNewLine}{%
+   \let\thelstnumber\origthelstnumber%
+   \refstepcounter{lstnumber}
+  }%
+}
+
+
+\lstdefinelanguage{JavaScript}{
+  keywords = [1]{class, export, boolean, throw, implements, import, this, function, test, switch, case, extends, var, telemetry, null, new},
+  keywords = [2]{return, const, if, throw, else, import, from, try, await, default, render},
+  keywords = [3]{fetch, dispatch, failed, fulfilled, then, get, checkVersion, json, catch, min, apply, max, map, keys, groupBy, isValidFunction, values, includes, reduce, concat, sort, getTime, splice},
+  keywordstyle = [1]{\color{blue}},
+  keywordstyle = [2]{\color{violet}},
+  keywordstyle = [3]{\color{orange}},
+  sensitive=false,
+  comment=[l]{//},
+  morecomment=[s]{/*}{*/},
+  commentstyle=\color{green}\ttfamily,
+  stringstyle=\color{brown}\ttfamily,
+  morestring=[b]',
+  morestring=[b]"
+}
+
+\lstdefinelanguage{xBase}{
+  keywords = [1]{function, local, next, return, for, to, endif},
+  keywords = [2]{AADD, ExportComponentFunction},
+  keywords = [3]{DEFAULT_STATE, PRODUCTION_BAR_SELECTED, ACTION_TYPE},
+  keywordstyle = [1]{\color{blue}},
+  keywordstyle = [2]{\color{CornflowerBlue}},
+  keywordstyle = [3]{\color{orange}},
+  sensitive=false,
+  comment=[l]{//},
+  morecomment=[s]{/*}{*/},
+  commentstyle=\textcolor{DarkGreen}\ttfamily,
+  stringstyle=\color{brown}\ttfamily,
+  morestring=[b]',
+  morestring=[b]",
+  literate={:=}{{\red{$:=$}}}2
+}
+\newcommand{\red}[1]{\textcolor{red}{#1}}
+\newcommand{\green}[1]{\textcolor{DarkGreen}{#1}}
+\newcommand{\blue}[1]{\textcolor{DarkBlue}{#1}}
+\lstdefinelanguage{sharpC}{
+  keywords = [1]{string, var, await, return, for, public, static, new, if, null, private},
+  keywords = [2]{String, JObject, JArray, List, CycleLine, FunctionType, CycleType, Component, Comparison},
+  keywordstyle = [1]{\color{blue}},
+  keywordstyle = [2]{\color{DarkGreen}},
+  sensitive=false,
+  comment=[l]{//},
+  morecomment=[s]{/*}{*/},
+  commentstyle=\color{green}\ttfamily,
+  stringstyle=\color{brown}\ttfamily,
+  morestring=[b]',
+  morestring=[b]",
+  literate={:=}{{\CodeSymbol{$:=$}}}2
+}
+
+\lstdefinelanguage{JSON}{
+  keywords = [1]{string, var, await, return, for, public, static, new, if, null},
+  keywords = [2]{String, JObject, JArray, List, CycleLine, FunctionType, Comparison},
+  keywordstyle = [1]{\color{blue}},
+  keywordstyle = [2]{\color{DarkGreen}},
+  sensitive=false,
+  comment=[l]{//},
+  commentstyle=\color{green}\ttfamily,
+}
+
