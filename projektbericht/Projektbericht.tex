@@ -31,7 +31,6 @@
 	\newpage
 	%Abkürzungen
 	\pagestyle{plain}
-	\input{Seiten/abkuerzungen}	
 	%Inhalt
 	\cleardoublepage
 	\pagenumbering{arabic}                  % Arabische Seitenzahlen für den Hauptteil
@@ -42,17 +41,4 @@
 
 	\newpage
 	% Verzeichnisse
-	\singlespacing
-	\pagenumbering{Roman} 
-	%Abbildungsverzeichnis
-	\listoffigures	
-	%Quellcodeverzeichnis
-	\listoftables
-	%\addcontentsline{toc}{section}{Quellcodeverzeichnis}          
-	% Erzeugen des Tabellenverzeichnisses
-	\renewcommand{\lstlistlistingname}{Quellcodeverzeichnis}
-	\lstlistoflistings
-	\newpage
-	%Literaturverzeichnis
-	\printbibliography[title={Literaturverzeichnis}]
 \end{document}
