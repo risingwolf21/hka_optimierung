@@ -117,15 +117,16 @@ bool intersects(Vector<T,3> origin, Vector<T,3> direction,
     if ( normal.scalar_product(vector) < 0.0 ) { 
       return false;
     }
-
-    Vector<T,3> vectorV = cross_product(p1 - p3, intersection - p3 );
-    if (normal.scalar_product(vectorV) < 0.0 ) {
+    FLOAT sqaureUArea = vector.square_of_length();
+    vector = cross_product(p1 - p3, intersection - p3 );
+    if (normal.scalar_product(vector) < 0.0 ) {
       return false;
     }
 
-    T squareArea = normal.square_of_length();
-    v = sqrt(vectorV.square_of_length() / squareArea);
-    u = sqrt(vector.square_of_length() / squareArea);
+    T squareArea = normal.square_of_length(); // one sqrt saved, A = 0.5 * |(AB x AC)|
+
+    v = sqrt(vector.square_of_length() / squareArea);
+    u = sqrt(sqaureUArea / squareArea);
 
     return true;
   }
