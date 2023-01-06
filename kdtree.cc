@@ -45,6 +45,7 @@ bool BoundingBox::contains(Vector<FLOAT, 3> v)
 
 bool BoundingBox::contains(Triangle<FLOAT> *triangle)
 {
+  // one point in box
   return contains(triangle->p1) || contains(triangle->p2) || contains(triangle->p3);
 }
 
@@ -75,12 +76,14 @@ KDTree::~KDTree()
 
 KDTree *KDTree::buildTree(KDTree *tree, std::vector<Triangle<FLOAT> *> &triangles)
 {
+  // stop recursion
   if (triangles.size() <= MAX_TRIANGLES_PER_LEAF)
   {
     // copy triangles to this node
     tree->triangles.insert(std::end(tree->triangles), std::begin(triangles), std::end(triangles));
     return tree;
   }
+
   left = new KDTree();
   right = new KDTree();
   // split bounding box
@@ -89,6 +92,7 @@ KDTree *KDTree::buildTree(KDTree *tree, std::vector<Triangle<FLOAT> *> &triangle
   auto leftTriangles = std::vector<Triangle<float> *>();
   auto rightTriangles = std::vector<Triangle<float> *>();
 
+  // assign triangles to left/right children
   for (auto const &triangle : triangles)
   {
     bool leftContains = tree->left->box.contains(triangle);
@@ -107,11 +111,10 @@ KDTree *KDTree::buildTree(KDTree *tree, std::vector<Triangle<FLOAT> *> &triangle
       rightTriangles.push_back(triangle);
     }
   }
-  
+
   left = left->buildTree(left, leftTriangles);
 
   right = right->buildTree(right, rightTriangles);
-
   return tree;
 }
 
@@ -137,18 +140,19 @@ KDTree *KDTree::buildTree(std::vector<Triangle<FLOAT> *> &triangles)
   // create bounding box
   root->box = BoundingBox(min, max);
   // use private constructor to build tree
-  root->buildTree(triangles);
-
+  root->buildTree(root, triangles);
   return root;
 }
 
 bool KDTree::hasNearestTriangle(Vector<FLOAT, 3> eye, Vector<FLOAT, 3> direction, Triangle<FLOAT> *&nearest_triangle, FLOAT &t, FLOAT &u, FLOAT &v, FLOAT minimum_t)
 {
+  // check if ray intersects bounding box
   if (!box.intersects(eye, direction))
   {
     return false;
   }
 
+  // check if ray intersects triangles in children
   if (this->left != nullptr)
   {
     if (this->left->hasNearestTriangle(eye, direction, nearest_triangle, t, u, v, minimum_t))
@@ -160,10 +164,11 @@ bool KDTree::hasNearestTriangle(Vector<FLOAT, 3> eye, Vector<FLOAT, 3> direction
       minimum_t = t;
   }
 
+  // check if ray intersects triangles in this node
   for (auto triangle : this->triangles)
   {
     stats.no_ray_triangle_intersection_tests++;
-
+    // every call to triangle-> intersects will change the value of t, u, v but not minimum_t
     if (triangle->intersects(eye, direction, t, u, v, minimum_t))
     {
       stats.no_ray_triangle_intersections_found++;
@@ -172,6 +177,7 @@ bool KDTree::hasNearestTriangle(Vector<FLOAT, 3> eye, Vector<FLOAT, 3> direction
     }
   }
 
+  // set t to the found minimum (t could have changed since the minimum was found!)
   t = minimum_t;
   return nearest_triangle != nullptr;
 }
